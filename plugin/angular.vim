@@ -179,7 +179,7 @@ function! s:GenerateSrcPaths(currentpath, appbasepath, testbasepath) abort
         \ s:SubStr(s:SubStr(a:currentpath, a:testbasepath, a:appbasepath), ".spec.js.coffee", ".js.coffee")]
 endfunction
 
-function! s:Alternate(cmd) abort
+function! s:AngularAlternate(cmd) abort
   let l:currentpath = expand('%')
   let l:possiblepathsforalternatefile = []
 
@@ -328,10 +328,10 @@ augroup END
 if !exists('g:angular_skip_alternate_mappings')
   augroup angular_alternate
     autocmd!
-    autocmd FileType javascript,coffee command! -buffer -bar -bang A :exe s:Alternate('edit<bang>')
-    autocmd FileType javascript,coffee command! -buffer -bar AS :exe s:Alternate('split')
-    autocmd FileType javascript,coffee command! -buffer -bar AV :exe s:Alternate('vsplit')
-    autocmd FileType javascript,coffee command! -buffer -bar AT :exe s:Alternate('tabedit')
+    autocmd FileType javascript,coffee command! -buffer -bar -bang AA :exe s:AngularAlternate('edit<bang>')
+    autocmd FileType javascript,coffee command! -buffer -bar AAS :exe s:AngularAlternate('split')
+    autocmd FileType javascript,coffee command! -buffer -bar AAV :exe s:AngularAlternate('vsplit')
+    autocmd FileType javascript,coffee command! -buffer -bar AAT :exe s:AngularAlternate('tabedit')
   augroup END
 endif
 
