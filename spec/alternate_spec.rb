@@ -89,9 +89,7 @@ describe "alternate" do
     assume_vimrc 'let g:angular_test_directory = "spec/javascripts/angular"'
 
     should_alternate_between('app/assets/javascripts/angular/foos/index.controller.js', 'spec/javascripts/angular/foos/index.controller.spec.js')
-
-    # coffee currently not supported. pull requests welcome.
-    # should_alternate_between('app/assets/javascripts/angular/foos/index.controller.js.coffee', 'spec/javascripts/angular/foos/index.controller.spec.js.coffee')
+    should_alternate_between('app/assets/javascripts/angular/foos/index.controller.js.coffee', 'spec/javascripts/angular/foos/index.controller.spec.js.coffee')
   end
 
   specify "pairs should not all work" do

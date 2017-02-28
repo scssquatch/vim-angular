@@ -168,12 +168,15 @@ function! s:GenerateTestPaths(currentpath, appbasepath, testbasepath) abort
   let l:samefilename = s:SubStr(a:currentpath, a:appbasepath, a:testbasepath)
   let l:withcamelcasedspecsuffix = s:SubStr(s:SubStr(a:currentpath, a:appbasepath, a:testbasepath), ".js", "Spec.js")
   let l:withdotspecsuffix = s:SubStr(s:SubStr(a:currentpath, a:appbasepath, a:testbasepath), ".js", ".spec.js")
-  return [l:withdotspecsuffix, l:withcamelcasedspecsuffix, l:samefilename]
+  let l:withcoffeescriptdotspecsuffix = s:SubStr(s:SubStr(a:currentpath, a:appbasepath, a:testbasepath), ".js.coffee", ".spec.js.coffee")
+  let l:withcoffeescriptcamelcasedspecsuffix = s:SubStr(s:SubStr(a:currentpath, a:appbasepath, a:testbasepath), ".js.coffee", "Spec.js.coffee")
+  return [l:withdotspecsuffix, l:withcamelcasedspecsuffix, l:withcoffeescriptdotspecsuffix, l:withcoffeescriptcamelcasedspecsuffix, l:samefilename]
 endfunction
 
 function! s:GenerateSrcPaths(currentpath, appbasepath, testbasepath) abort
   return [s:SubStr(s:SubStr(a:currentpath, a:testbasepath, a:appbasepath), "Spec.js", ".js"),
-        \ s:SubStr(s:SubStr(a:currentpath, a:testbasepath, a:appbasepath), ".spec.js", ".js")]
+        \ s:SubStr(s:SubStr(a:currentpath, a:testbasepath, a:appbasepath), ".spec.js", ".js"),
+        \ s:SubStr(s:SubStr(a:currentpath, a:testbasepath, a:appbasepath), ".spec.js.coffee", ".js.coffee")]
 endfunction
 
 function! s:Alternate(cmd) abort
@@ -311,29 +314,31 @@ nnoremap <silent> <Plug>AngularGfJump :<C-U>exe <SID>FindFileBasedOnAngularServi
 nnoremap <silent> <Plug>AngularGfSplit :<C-U>exe <SID>FindFileBasedOnAngularServiceUnderCursor('split')<CR>
 nnoremap <silent> <Plug>AngularGfTabjump :<C-U>exe <SID>FindFileBasedOnAngularServiceUnderCursor('tabedit')<CR>
 
+au BufNewFile,BufRead *.coffee set filetype=coffee
+
 augroup angular_gf
   autocmd!
-  autocmd FileType javascript,html command! -buffer AngularGoToFile :call s:FindFileBasedOnAngularServiceUnderCursor('open')
-  autocmd FileType javascript,html nmap <buffer> gf          <Plug>AngularGfJump
-  autocmd FileType javascript,html nmap <buffer> <C-W>f      <Plug>AngularGfSplit
-  autocmd FileType javascript,html nmap <buffer> <C-W><C-F>  <Plug>AngularGfSplit
-  autocmd FileType javascript,html nmap <buffer> <C-W>gf     <Plug>AngularGfTabjump
+  autocmd FileType javascript,coffee,html command! -buffer AngularGoToFile :call s:FindFileBasedOnAngularServiceUnderCursor('open')
+  autocmd FileType javascript,coffee,html nmap <buffer> gf          <Plug>AngularGfJump
+  autocmd FileType javascript,coffee,html nmap <buffer> <C-W>f      <Plug>AngularGfSplit
+  autocmd FileType javascript,coffee,html nmap <buffer> <C-W><C-F>  <Plug>AngularGfSplit
+  autocmd FileType javascript,coffee,html nmap <buffer> <C-W>gf     <Plug>AngularGfTabjump
 augroup END
 
 if !exists('g:angular_skip_alternate_mappings')
   augroup angular_alternate
     autocmd!
-    autocmd FileType javascript command! -buffer -bar -bang A :exe s:Alternate('edit<bang>')
-    autocmd FileType javascript command! -buffer -bar AS :exe s:Alternate('split')
-    autocmd FileType javascript command! -buffer -bar AV :exe s:Alternate('vsplit')
-    autocmd FileType javascript command! -buffer -bar AT :exe s:Alternate('tabedit')
+    autocmd FileType javascript,coffee command! -buffer -bar -bang A :exe s:Alternate('edit<bang>')
+    autocmd FileType javascript,coffee command! -buffer -bar AS :exe s:Alternate('split')
+    autocmd FileType javascript,coffee command! -buffer -bar AV :exe s:Alternate('vsplit')
+    autocmd FileType javascript,coffee command! -buffer -bar AT :exe s:Alternate('tabedit')
   augroup END
 endif
 
 augroup angular_run_spec
   autocmd!
-  autocmd FileType javascript command! -buffer AngularRunSpec :call s:AngularRunSpec()
-  autocmd FileType javascript command! -buffer AngularRunSpecBlock :call s:AngularRunSpecBlock()
-  autocmd FileType javascript nnoremap <silent><buffer> <Leader>rs  :AngularRunSpec<CR>
-  autocmd FileType javascript nnoremap <silent><buffer> <Leader>rb  :AngularRunSpecBlock<CR>
+  autocmd FileType javascript,coffee command! -buffer AngularRunSpec :call s:AngularRunSpec()
+  autocmd FileType javascript,coffee command! -buffer AngularRunSpecBlock :call s:AngularRunSpecBlock()
+  autocmd FileType javascript,coffee nnoremap <silent><buffer> <Leader>rs  :AngularRunSpec<CR>
+  autocmd FileType javascript,coffee nnoremap <silent><buffer> <Leader>rb  :AngularRunSpecBlock<CR>
 augroup END
